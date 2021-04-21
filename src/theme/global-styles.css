@@ -1,0 +1,25 @@
+a {
+    color: rgb(35, 135, 174);
+}
+
+.header-title {
+    color:rgb(255, 225, 75);
+}
+
+.card-title {
+    background-color: white;
+    color:grey
+}
+
+.searchbar {
+    color:black;
+}
+
+.error-bar{
+    background-color: red;
+}
+
+.center-align{
+    display:flex;
+    justify-content:center;
+}
