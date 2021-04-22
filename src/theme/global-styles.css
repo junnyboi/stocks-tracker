@@ -3,7 +3,9 @@ a {
 }
 
 .header-title {
-    color:rgb(255, 225, 75);
+    color:whitesmoke;
+    /* background-color: sandybrown; */
+    background-color: rgb(229, 157, 24);
 }
 
 .card-title {
@@ -22,4 +24,45 @@ a {
 .center-align{
     display:flex;
     justify-content:center;
+    align-items: center;
+}
+
+.tab-selected{
+    color:rgb(61, 61, 61);
+}
+
+.divider{
+    background-color: transparent;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #f1f1f1 inset !important;
+    -webkit-text-fill-color: rgb(138, 62, 0); 
+}
+
+@-webkit-keyframes autofill {
+    0%,
+    100% {
+        color: #666;
+        background: transparent;
+    }
+}
+
+input:-webkit-autofill {
+    -webkit-animation-delay: 1s; /* Safari support - any positive time runs instantly */
+    -webkit-animation-name: autofill;
+    -webkit-animation-fill-mode: both;
+}
+
+.welcome-card{
+    width:40%;
+    display: inline-block;
+}
+
+.news-card{
+    display:block;
+    overflow: auto;
 }

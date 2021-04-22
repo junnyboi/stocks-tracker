@@ -4,7 +4,7 @@ http://ionicframework.com/docs/theming/ */
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #f2f2f2;
+  --ion-color-primary: transparent;
   --ion-color-primary-rgb: 242, 242, 242;
   --ion-color-primary-contrast: darkslategray;
   --ion-color-primary-contrast-rgb: 0, 0, 0;
@@ -84,9 +84,9 @@ http://ionicframework.com/docs/theming/ */
 
   body {
     /** primary **/
-    --ion-color-primary: #f2f2f2;
+    --ion-color-primary: transparent;
     --ion-color-primary-rgb: 242, 242, 242;
-    --ion-color-primary-contrast: darkslategray;
+    --ion-color-primary-contrast: rgb(109, 109, 109);
     --ion-color-primary-contrast-rgb: 0, 0, 0;
     --ion-color-primary-shade: #d5d5d5;
     --ion-color-primary-tint: #f3f3f3;
@@ -156,9 +156,9 @@ http://ionicframework.com/docs/theming/ */
 
   .ios body {
     --ion-background-color: #eeeeee;
-    --ion-background-color-rgb: 0,0,0;
+    --ion-background-color-rgb: 250,250,250;
 
-    --ion-text-color: #616161;
+    --ion-text-color: #484848;
     --ion-text-color-rgb: 0,0,0;
 
     --ion-color-step-50: #0d0d0d;
@@ -181,9 +181,9 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-step-900: #e6e6e6;
     --ion-color-step-950: #f2f2f2;
 
-    --ion-item-background: #000000;
+    --ion-item-background: transparent;
 
-    --ion-card-background: #1c1c1d;
+    --ion-card-background: transparent;
   }
 
   .ios ion-modal {
@@ -192,6 +192,9 @@ http://ionicframework.com/docs/theming/ */
     --ion-toolbar-border-color: var(--ion-color-step-250);
   }
 
+  .footer-ios {
+    background-color: whitesmoke;
+  }
 
   /*
    * Material Design Dark Theme
@@ -202,8 +205,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-background-color: #eeeeee;
     --ion-background-color-rgb: 18,18,18;
 
-    --ion-text-color: #616161;
-    --ion-text-color-rgb: 200,200,200;
+    --ion-text-color: #484848;
+    --ion-text-color-rgb: 0,0,0;
 
     --ion-border-color: #222222;
 
@@ -227,12 +230,12 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
-    --ion-item-background: #f6f6f6;
+    --ion-item-background: transparent;
 
-    --ion-toolbar-background: #1f1f1f;
+    --ion-toolbar-background: transparent;
 
-    --ion-tab-bar-background: #1f1f1f;
+    --ion-tab-bar-background: whitesmoke;
 
-    --ion-card-background: #ffffff;
+    --ion-card-background: transparent;
   }
 }

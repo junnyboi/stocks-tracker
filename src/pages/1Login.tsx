@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 
-import { 
-  IonContent, IonHeader, IonFooter, 
-  IonPage, IonTitle, IonToolbar, 
-  IonInput, IonItem, IonLabel, 
-  IonList
+import {
+  IonContent, IonHeader, IonFooter,
+  IonPage, IonTitle, IonToolbar,
+  IonInput, IonItem, IonLabel,
+  IonList,
+  IonItemDivider
 } from '@ionic/react';
 
 import RoundButton from '../components/RoundButton'
@@ -32,7 +33,7 @@ const LoginPage: React.FC = () => {
   const [smsCode, setSmsCode] = useState<string>()
   const [error, setError] = useState("")
 
-  function ResetAll(){
+  function ResetAll() {
     setPageTitle('Login')
     setIsRegistration(false)
     setIsPhoneNumberConfirmed(false)
@@ -50,39 +51,39 @@ const LoginPage: React.FC = () => {
       console.log("Sign out unsuccessful")
     });
   }, [])
-  
+
   function phoneSignIn() {
     function getPhoneNumberFromUserInput() {
       // TODO validate input
-      if(!phoneNumber){
+      if (!phoneNumber) {
         setError("Please enter a mobile number!")
         return
       }
       setError("")
       return phoneNumber;
     }
-  
+
     // [START auth_phone_signin]
     const number = getPhoneNumberFromUserInput();
     const appVerifier = window.recaptchaVerifier;
     firebase.auth().signInWithPhoneNumber(number!, appVerifier)
-        .then((confirmationResult) => {
-          window.confirmationResult = confirmationResult;
-          console.log("Successfully sent sms code to", number)
-          // prompt user to enter code
-          setIsPhoneNumberConfirmed(true);
-        }).catch((error) => {
-          // console.log("Error signing in with mobile no:", error.message)
-          setError(error.message)
-          // TODO reset reCAPTCHA so user can try again
-        });
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        console.log("Successfully sent sms code to", number)
+        // prompt user to enter code
+        setIsPhoneNumberConfirmed(true);
+      }).catch((error) => {
+        // console.log("Error signing in with mobile no:", error.message)
+        setError(error.message)
+        // TODO reset reCAPTCHA so user can try again
+      });
     // [END auth_phone_signin]
   }
 
-  function verifyCode() {    
+  function verifyCode() {
     // [START auth_phone_verify_code]
-      if (smsCode?.toString().length === 6){
-        window.confirmationResult.confirm(smsCode.toString())
+    if (smsCode?.toString().length === 6) {
+      window.confirmationResult.confirm(smsCode.toString())
         .then((result: any) => {
           // User signed in successfully.
           const user = result.user;
@@ -96,12 +97,12 @@ const LoginPage: React.FC = () => {
           // console.log("Error: user couldn't sign in", error.message)
           setError(error.message)
         });
-        // [END auth_phone_verify_code]
-      }
-      else {
-        // console.log("SMS code requires 6 digits")
-        setError("SMS code requires 6 digits")
-      }
+      // [END auth_phone_verify_code]
+    }
+    else {
+      // console.log("SMS code requires 6 digits")
+      setError("SMS code requires 6 digits")
+    }
   }
 
   return (
@@ -112,63 +113,57 @@ const LoginPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{pageTitle.toUpperCase}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+
+        <IonItemDivider className="divider" />
+
         <IonList>
-          { !isPhoneNumberConfirmed &&
+          {!isPhoneNumberConfirmed &&
             <IonItem>
-            <IonLabel position="fixed">Mobile No</IonLabel>
-            <IonInput 
-              type="tel" value={phoneNumber} placeholder="Enter mobile number" 
-              onIonChange={e => setPhoneNumber(e.detail.value!)} 
-              clearInput autocomplete="tel-country-code"></IonInput>
-          </IonItem>}
-          { isPhoneNumberConfirmed &&
+              <IonLabel position="fixed">Mobile No</IonLabel>
+              <IonInput
+                type="tel" value={phoneNumber} placeholder="Enter mobile number"
+                onIonChange={e => setPhoneNumber(e.detail.value!)}
+                clearInput autocomplete="tel-country-code"></IonInput>
+            </IonItem>}
+          {isPhoneNumberConfirmed &&
             <IonItem>
-            <IonLabel position="fixed">Code</IonLabel>
-            <IonInput 
-              type="text" value={smsCode} placeholder="Enter the code sent to your number" 
-              onIonChange={e => setSmsCode(e.detail.value!)} 
-              clearInput></IonInput>
-          </IonItem> }          
+              <IonLabel position="fixed">Code</IonLabel>
+              <IonInput
+                type="text" value={smsCode} placeholder="Enter the code sent to your number"
+                onIonChange={e => setSmsCode(e.detail.value!)}
+                clearInput></IonInput>
+            </IonItem>}
           {error && <ErrorBar name={`ERROR: ${error}`} />}
         </IonList>
-        <IonFooter>
-          <IonToolbar>
-            { !isPhoneNumberConfirmed && !isRegistration &&
-              <RoundButton 
-              handleOnClick={phoneSignIn} 
-              text="Sign-in"  id="sign-in-button" color="secondary"
+        <IonItemDivider className="divider" />
+        <div className="center-align">
+          {!isPhoneNumberConfirmed && !isRegistration &&
+            <RoundButton
+              handleOnClick={phoneSignIn}
+              text="Sign-in" id="sign-in-button" color="secondary"
             />}
-            { !isPhoneNumberConfirmed && isRegistration &&
-              <RoundButton 
-              handleOnClick={phoneSignIn} 
-              text="Sign up!"  id="sign-in-button" color="secondary"
+          {!isPhoneNumberConfirmed && isRegistration &&
+            <RoundButton
+              handleOnClick={phoneSignIn}
+              text="Sign up!" id="sign-in-button" color="secondary"
             />}
-            { isPhoneNumberConfirmed &&
-              <RoundButton 
-              handleOnClick={verifyCode} 
-              text="Verify code"  id="verify-code-button" color="secondary" 
+          {isPhoneNumberConfirmed &&
+            <RoundButton
+              handleOnClick={verifyCode}
+              text="Verify code" id="verify-code-button" color="secondary"
             />}
-          </IonToolbar>          
-        </IonFooter>
+          {!isPhoneNumberConfirmed && <div id="recaptcha-container"></div>}
 
-        {!isPhoneNumberConfirmed && <div id="recaptcha-container"></div>}
-
-        { !isPhoneNumberConfirmed && !isRegistration &&
-          <IonToolbar>
-              <RoundButton 
-              handleOnClick={()=>{
+          {!isPhoneNumberConfirmed && !isRegistration &&
+            <RoundButton
+              handleOnClick={() => {
                 setIsRegistration(true)
                 setPageTitle("Register new user")
-              }} 
-              text="New user?"  id="new-user-button" color="primary" 
+              }}
+              text="New user?" id="new-user-button" color="primary"
             />
-          </IonToolbar>
-        }
+          }
+        </div>
       </IonContent>
     </IonPage>
   );

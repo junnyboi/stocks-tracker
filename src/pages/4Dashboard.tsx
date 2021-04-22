@@ -18,11 +18,7 @@ const DashboardPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{pageTitle.toUpperCase}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        
         <Searchbar />
 
         <IonCard>

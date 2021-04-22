@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
-  IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-  IonItem, IonIcon, IonLabel, IonButton
+  IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle,
+  IonCardContent, IonItem, IonIcon, IonLabel,
+  IonButton, IonItemDivider
 } from '@ionic/react';
 
 import NavBar from '../components/NavBar'
@@ -18,13 +19,13 @@ const WelcomePage: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [pageTitle, setPageTitle] = useState(`Welcome!`)
 
-// Set observer to get current user details
+  // Set observer to get current user details
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       // User is signed in.
       console.log("User currently logged in with:", user.phoneNumber)
       var user = firebase.auth().currentUser;
-  
+
       if (user != null) {
         setPhoneNumber(user.phoneNumber!)
         setPageTitle(`Welcome ${user.phoneNumber!}!`)
@@ -37,54 +38,53 @@ const WelcomePage: React.FC = () => {
 
   return (
     <IonPage>
+
       <IonHeader className="header-container">
         <IonToolbar>
           <IonTitle className="header-title">{pageTitle}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">{pageTitle.toUpperCase}</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <Searchbar />
 
-        <IonCard>
+      <IonContent fullscreen>
+
+        <IonCard >
           <IonCardHeader>
-            <IonCardTitle>Start by adding stocks</IonCardTitle>
-            <IonCardSubtitle>to your watchlist to follow and trade!</IonCardSubtitle>
+            <h4>Start by adding stocks to your watchlist and build a portfolio!</h4>
+            <p>Select from the suggestions below or use our search engine to discover new ones.</p>
           </IonCardHeader>
         </IonCard>
-          
-        <IonCard>
-          <IonItem>
-              <IonCardContent>APPLE (AAPL)</IonCardContent>
-              <IonCardContent>Loading...</IonCardContent>
+
+        <Searchbar />
+
+        <IonCard href={`/asset/AAPL/AppleInc`} className="welcome-card">
+          <img src="https://i.pinimg.com/564x/8d/f5/e7/8df5e76136dcba44841002494e01e050.jpg" alt='' />
+          <IonItem lines="none">
+            <IonCardContent>Apple Inc. (AAPL)</IonCardContent>
           </IonItem>
         </IonCard>
 
-        <IonCard>
-          <IonItem>
-              <IonCardContent>GAMESTOP (GSTP)</IonCardContent>
-              <IonCardContent>Loading...</IonCardContent>
+        <IonCard href={`/asset/TSLA/TeslaInc`} className="welcome-card">
+          <img src="https://i.pinimg.com/564x/ff/c0/f3/ffc0f3182c18ec063380a32c89a95c3e.jpg" alt='' />
+          <IonItem lines="none">
+            <IonCardContent>Tesla, Inc. (TSLA)</IonCardContent>
           </IonItem>
         </IonCard>
 
-        <IonCard>
-          <IonItem>
-              <IonCardContent>DISNEY (DSNY)</IonCardContent>
-              <IonCardContent>Loading...</IonCardContent>
+        <IonCard href={`/asset/GME/GameStopCorp`} className="welcome-card">
+          <img src="https://i.pinimg.com/564x/ab/39/84/ab398459738820549d7c60a5000311ff.jpg" alt='' />
+          <IonItemDivider className="divider" />
+          <IonItem lines="none">
+            <IonCardContent>GameStop Corp. (GME)</IonCardContent>
           </IonItem>
         </IonCard>
 
-        <IonCard>
-          <IonItem>
-              <IonCardContent>TESLA (TSLA)</IonCardContent>
-              <IonCardContent>Loading...</IonCardContent>
+        <IonCard href={`/asset/DIS/TheWaltDisneyCompany`} className="welcome-card">
+          <img src="https://i.pinimg.com/564x/dc/5f/ee/dc5fee0189b193c8ebf8e19076ad56f0.jpg" alt='' />
+          <IonItem lines="none">
+            <IonCardContent>The Walt Disney Company (DSNY)</IonCardContent>
           </IonItem>
         </IonCard>
-                
+
       </IonContent>
       <NavBar />
     </IonPage>
