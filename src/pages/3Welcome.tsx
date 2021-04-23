@@ -45,7 +45,7 @@ const WelcomePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen>
+      <IonContent fullscreen className="center-align">
 
         <IonCard >
           <IonCardHeader>
@@ -56,21 +56,21 @@ const WelcomePage: React.FC = () => {
 
         <Searchbar />
 
-        <IonCard href={`/asset/AAPL/AppleInc`} className="welcome-card">
+        <IonCard href={`/asset/AAPL/Apple%20Inc`} className="welcome-card">
           <img src="https://i.pinimg.com/564x/8d/f5/e7/8df5e76136dcba44841002494e01e050.jpg" alt='' />
           <IonItem lines="none">
             <IonCardContent>Apple Inc. (AAPL)</IonCardContent>
           </IonItem>
         </IonCard>
 
-        <IonCard href={`/asset/TSLA/TeslaInc`} className="welcome-card">
+        <IonCard href={`/asset/TSLA/Tesla%20Inc`} className="welcome-card">
           <img src="https://i.pinimg.com/564x/ff/c0/f3/ffc0f3182c18ec063380a32c89a95c3e.jpg" alt='' />
           <IonItem lines="none">
             <IonCardContent>Tesla, Inc. (TSLA)</IonCardContent>
           </IonItem>
         </IonCard>
 
-        <IonCard href={`/asset/GME/GameStopCorp`} className="welcome-card">
+        <IonCard href={`/asset/GME/GameStop%20Corp`} className="welcome-card">
           <img src="https://i.pinimg.com/564x/ab/39/84/ab398459738820549d7c60a5000311ff.jpg" alt='' />
           <IonItemDivider className="divider" />
           <IonItem lines="none">
@@ -78,7 +78,7 @@ const WelcomePage: React.FC = () => {
           </IonItem>
         </IonCard>
 
-        <IonCard href={`/asset/DIS/TheWaltDisneyCompany`} className="welcome-card">
+        <IonCard href={`/asset/DIS/The%20Walt%20Disney%20Company`} className="welcome-card">
           <img src="https://i.pinimg.com/564x/dc/5f/ee/dc5fee0189b193c8ebf8e19076ad56f0.jpg" alt='' />
           <IonItem lines="none">
             <IonCardContent>The Walt Disney Company (DSNY)</IonCardContent>

@@ -25,6 +25,8 @@ a {
     display:flex;
     justify-content:center;
     align-items: center;
+    vertical-align: center;
+    text-align: center;
 }
 
 .tab-selected{
@@ -58,8 +60,11 @@ input:-webkit-autofill {
 }
 
 .welcome-card{
-    width:40%;
+    width:50%;
     display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
 }
 
 .news-card{

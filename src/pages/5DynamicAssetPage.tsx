@@ -30,34 +30,40 @@ const DynamicAssetPage: React.FC = () => {
     const quoteApiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${environment.alphaVantageApiKey}`;
     axios.get(quoteApiUrl).then((response) => {
       const data = response.data;
-      setQuoteData(data);
-      console.log("Quote Data:", data)
+      if(data){
+        setQuoteData(data);
+        console.log("Quote Data:", data)
+      }
     });
 
     const timeSeriesApiUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${symbol}&outputsize=compact&apikey=${environment.alphaVantageApiKey}`;
     axios.get(timeSeriesApiUrl).then((response) => {
       const data = response.data["Time Series (Daily)"];
 
-      // Format time series data for chart
-      let formattedData: any[] = []
-      Object.keys(data).reverse().forEach((key) => {
-        formattedData.push({
-          "date": key,
-          "closing": data[key]["5. adjusted close"],
+      if(data){
+        // Format time series data for chart
+        let formattedData: any[] = []
+        Object.keys(data).reverse().forEach((key) => {
+          formattedData.push({
+            "date": key,
+            "closing": data[key]["5. adjusted close"],
+          })
         })
-      })
-
-      console.log("Time Series Data:", formattedData)
-      setTimeSeriesData(formattedData);
+  
+        console.log("Time Series Data:", formattedData)
+        setTimeSeriesData(formattedData);
+      }
     });
 
-    const newsApiUrl = `https://newsapi.org/v2/everything?q=${symbol}&from=2021-04-01&sortBy=popularity&apiKey=${environment.newsApiKey}`;
+    const newsApiUrl = `https://newsapi.org/v2/everything?q=${name}&from=2021-04-01&sortBy=popularity&apiKey=${environment.newsApiKey}`;
     axios.get(newsApiUrl).then((response) => {
       const data = response.data;
-      setNewsData(data);
-      console.log("News Data:", data)
+      if(data){
+        setNewsData(data);
+        console.log("News Data:", data)
+      }
     });
-  }, [symbol])
+  }, [name, symbol])
 
   return (
     <IonPage>
@@ -90,7 +96,7 @@ const DynamicAssetPage: React.FC = () => {
             </IonCardContent>
           </IonItem>}
 
-          {quoteData && <IonItem>
+          {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Price: ${quoteData!["Global Quote"]["05. price"]}`}
             </IonCardContent>
@@ -99,13 +105,13 @@ const DynamicAssetPage: React.FC = () => {
             </IonCardContent>
           </IonItem>}
 
-          {quoteData && <IonItem>
+          {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Latest trading day: ${quoteData!["Global Quote"]["07. latest trading day"]}`}
             </IonCardContent>
           </IonItem>}
 
-          {quoteData && <IonItem>
+          {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Previous close: ${quoteData!["Global Quote"]["08. previous close"]}`}
             </IonCardContent>
