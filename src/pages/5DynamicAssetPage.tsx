@@ -29,14 +29,13 @@ var user_mobile: string = "Debug Mode";
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     // User is signed in.
+    console.log("User detected:", user.phoneNumber)
     user_mobile = user.phoneNumber!;
-  }
-  else {
-    user_mobile = "Debug Mode"
   }
 })
 
 const DynamicAssetPage: React.FC = () => {
+  // const [user_mobile, setUser_mobile] = useState("Debug Mode")
   const [pageTitle, setPageTitle] = useState("Dynamic Asset Page")
   const [isWatchlist, setIsWatchlist] = useState<boolean>(false)
   const params: { symbol: string, name: string } = useParams()
@@ -64,7 +63,7 @@ const DynamicAssetPage: React.FC = () => {
         console.log("Creating new watchlist for", user_mobile)
         watchlistRef.set({
           created: firebase.firestore.FieldValue.serverTimestamp(),
-          stocks: params
+          stocks: [params]
         });
       }
     })
@@ -83,14 +82,13 @@ const DynamicAssetPage: React.FC = () => {
     })
   };
 
-  function CheckIsWatchlist() {
+  async function CheckIsWatchlist() {
+    await setIsWatchlist(false);
     watchlistRef.get().then((doc) => {
-      setIsWatchlist(false);
       if (doc.exists) {
-        console.log("doc exists:", doc.data())
+        console.log("Watchlist exists for ", user_mobile, doc.data())
         doc.data()!.stocks.forEach((item: { name: string, symbol: string }) => {
           if (item.name === name || item.symbol === symbol) {
-            // console.log("Stock already exists in watchlist")
             setIsWatchlist(true);
           }
         });
@@ -141,7 +139,7 @@ const DynamicAssetPage: React.FC = () => {
 
   useEffect(() => {
     CheckIsWatchlist();
-  }, [])
+  }, [user_mobile])
 
   return (
     <IonPage>
@@ -173,7 +171,6 @@ const DynamicAssetPage: React.FC = () => {
               {`Low: ${quoteData!["Global Quote"]["04. low"]}`}
             </IonCardContent>
           </IonItem>}
-
           {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Price: ${quoteData!["Global Quote"]["05. price"]}`}
@@ -182,13 +179,11 @@ const DynamicAssetPage: React.FC = () => {
               {`Volume: ${quoteData!["Global Quote"]["06. volume"]}`}
             </IonCardContent>
           </IonItem>}
-
           {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Latest trading day: ${quoteData!["Global Quote"]["07. latest trading day"]}`}
             </IonCardContent>
           </IonItem>}
-
           {quoteData && quoteData!["Global Quote"] && <IonItem>
             <IonCardContent>
               {`Previous close: ${quoteData!["Global Quote"]["08. previous close"]}`}

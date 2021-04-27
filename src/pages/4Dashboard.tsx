@@ -13,7 +13,6 @@ import Searchbar from '../components/Searchbar';
 
 import axios from 'axios';
 import { environment } from '../environment/environment'
-import { randomInt } from 'crypto';
 
 // Initialize Firebase database connection
 const db = firebase.firestore();
@@ -24,7 +23,7 @@ const DashboardPage: React.FC = () => {
   const [watchlist, setWatchlist] = useState([])
 
   const fetchWatchlist = async () => {
-    console.log("Retrieving watchlist for", user_mobile)
+    console.log("Attempting to retrieve watchlist for", user_mobile)
     const docRef = db.collection('watchlists').doc(user_mobile)
 
     docRef.get().then((doc) => {      if (doc.exists) {
@@ -34,6 +33,7 @@ const DashboardPage: React.FC = () => {
       }
       else {
         console.log("Watchlist does not exist for", user_mobile)
+        setWatchlist([])
       }
     });
   }
@@ -54,14 +54,12 @@ const DashboardPage: React.FC = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         // User is signed in.
+        console.log("User detected:", user.phoneNumber)
         setUser_mobile(user.phoneNumber!);
-      }
-      else {
-        setUser_mobile("Debug Mode")
       }
     })
     fetchWatchlist();
-  }, [])
+  }, [user_mobile])
 
   return (
     <IonPage>

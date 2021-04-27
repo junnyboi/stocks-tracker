@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
   IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle,
@@ -19,24 +19,26 @@ const WelcomePage: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [pageTitle, setPageTitle] = useState(`Welcome!`)
 
-  // Set observer to get current user details
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      // User is signed in.
-      console.log("User currently logged in with:", user.phoneNumber)
-      var user = firebase.auth().currentUser;
+  useEffect(() => {
+    // Set observer to get current user details
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        console.log("User currently logged in with:", user.phoneNumber)
+        var user = firebase.auth().currentUser;
 
-      if (user != null) {
-        setPhoneNumber(user.phoneNumber!)
-        setPageTitle(`Welcome ${user.phoneNumber!}!`)
+        if (user != null) {
+          setPhoneNumber(user.phoneNumber!)
+          setPageTitle(`Welcome ${user.phoneNumber!}!`)
+        }
+      } else {
+        // No user is signed in, force logout
+        //history.push('/');
+        setPhoneNumber("Debug Mode")
+        setPageTitle(`Debug Mode`)
       }
-    } else {
-      // No user is signed in, force logout
-      //history.push('/');
-      setPhoneNumber("Debug Mode")
-      setPageTitle(`Debug Mode`)
-    }
-  })
+    })
+  }, [])
 
   return (
     <IonPage>
