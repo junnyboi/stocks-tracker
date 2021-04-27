@@ -7,7 +7,7 @@ import { environment } from '../environment/environment'
 const Searchbar: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [bestMatches, setBestMatches] = useState([])
-  
+
   useEffect(() => {
     const apiUrl = `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${searchText}&apikey=${environment.alphaVantageApiKey}`;
     axios.get(apiUrl).then((response) => {
@@ -28,21 +28,27 @@ const Searchbar: React.FC = () => {
         placeholder="Search stock name or ticker code">
       </IonSearchbar>
       <IonList>
-        {bestMatches && bestMatches.map(item => (
-          <IonItem 
-            href={`/asset/${item["1. symbol"]}/${item["2. name"]}`}
-            onClick={()=>{ 
-              localStorage.setItem('selectedStock', `${item["1. symbol"]}/${item["2. name"]}`)
-            }
-          }>
-            <IonLabel >
-              {`${item["1. symbol"]}`}
-            </IonLabel>
-            <IonLabel>
-              {`${item["2. name"]}`}
-            </IonLabel>
-          </IonItem>
-        ))}
+        {bestMatches && bestMatches.map(item => {
+          const symbol = item["1. symbol"];
+          const name = item["2. name"];
+
+          return (
+            <IonItem
+              href={`/asset/${symbol}/${name}`}
+              onClick={() => {
+                localStorage.setItem('selectedStock', `${symbol}/${name}`)
+              }
+              }>
+              <IonLabel >
+                {`${symbol}`}
+              </IonLabel>
+              <IonLabel>
+                {`${name}`}
+              </IonLabel>
+            </IonItem>
+          )
+        }
+        )}
       </IonList>
     </div>
   );

@@ -1,15 +1,68 @@
+import { useState, useEffect } from 'react'
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
   IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-  IonItem, IonIcon, IonLabel, IonButton, IonItemDivider
+  IonItem, IonLabel, IonItemDivider, IonList
 } from '@ionic/react';
+
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 import NavBar from '../components/NavBar'
 import Searchbar from '../components/Searchbar';
 
+import axios from 'axios';
+import { environment } from '../environment/environment'
+import { randomInt } from 'crypto';
+
+// Initialize Firebase database connection
+const db = firebase.firestore();
 const pageTitle = 'Dashboard'
 
 const DashboardPage: React.FC = () => {
+  const [user_mobile, setUser_mobile] = useState("Debug Mode")
+  const [watchlist, setWatchlist] = useState([])
+
+  const fetchWatchlist = async () => {
+    console.log("Retrieving watchlist for", user_mobile)
+    const docRef = db.collection('watchlists').doc(user_mobile)
+
+    docRef.get().then((doc) => {      if (doc.exists) {
+        const stocks = doc.data()!.stocks;
+        console.log("Retrieved watchlist", stocks)
+        setWatchlist(stocks)
+      }
+      else {
+        console.log("Watchlist does not exist for", user_mobile)
+      }
+    });
+  }
+
+  const fetchPriceChange = async (symbol: string) => {    
+    const quoteApiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${environment.alphaVantageApiKey}`;
+    axios.get(quoteApiUrl).then((response) => {
+      const data = response.data;
+      if (data) {
+        console.log("fetchPriceChange Data:", data)
+        return data;
+      }
+    });
+
+  }
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        setUser_mobile(user.phoneNumber!);
+      }
+      else {
+        setUser_mobile("Debug Mode")
+      }
+    })
+    fetchWatchlist();
+  }, [])
+
   return (
     <IonPage>
       <IonHeader className="header-container">
@@ -18,52 +71,38 @@ const DashboardPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen className="center-align">
-        
+
         <Searchbar />
 
         <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Gainers and Losers</IonCardTitle>
-            <IonCardSubtitle>{`see all -->`}</IonCardSubtitle>
-          </IonCardHeader>
-        </IonCard>
-          
-        <IonCard href={`/asset/AAPL/Apple%20Inc`} className="welcome-card">
-          <img src="https://i.pinimg.com/564x/8d/f5/e7/8df5e76136dcba44841002494e01e050.jpg" alt='' />
-          <IonItem lines="none">
-            <IonCardContent>Apple Inc. (AAPL)</IonCardContent>
-          </IonItem>
-        </IonCard>
-
-        <IonCard href={`/asset/TSLA/Tesla%20Inc`} className="welcome-card">
-          <img src="https://i.pinimg.com/564x/ff/c0/f3/ffc0f3182c18ec063380a32c89a95c3e.jpg" alt='' />
-          <IonItem lines="none">
-            <IonCardContent>Tesla, Inc. (TSLA)</IonCardContent>
-          </IonItem>
-        </IonCard>
-
-        <IonCard>
-          <IonCardHeader>
-            <IonCardTitle>Your watchlist</IonCardTitle>
-            <IonCardSubtitle>{`see all -->`}</IonCardSubtitle>
+            <IonCardTitle>Your Watchlist</IonCardTitle>
+            {/* <a href="#">{`see all -->`}</a> */}
           </IonCardHeader>
         </IonCard>
 
-        <IonCard href={`/asset/GME/GameStop%20Corp`} className="welcome-card">
-          <img src="https://i.pinimg.com/564x/ab/39/84/ab398459738820549d7c60a5000311ff.jpg" alt='' />
-          <IonItemDivider className="divider" />
-          <IonItem lines="none">
-            <IonCardContent>GameStop Corp. (GME)</IonCardContent>
-          </IonItem>
-        </IonCard>
+        <IonList>
+          {watchlist && watchlist.map((item, i) => {
+            const symbol = item['symbol'];
+            const name = item['name'];
 
-        <IonCard href={`/asset/DIS/The%20Walt%20Disney%20Company`} className="welcome-card">
-          <img src="https://i.pinimg.com/564x/dc/5f/ee/dc5fee0189b193c8ebf8e19076ad56f0.jpg" alt='' />
-          <IonItem lines="none">
-            <IonCardContent>The Walt Disney Company (DSNY)</IonCardContent>
-          </IonItem>
-        </IonCard>
-                
+            return (
+              <IonItem
+                href={`/asset/${symbol}/${name}`}
+                onClick={() => {
+                  localStorage.setItem('selectedStock', `${symbol}/${name}`)
+                }
+                }>
+                <IonLabel >
+                  {`+${(Math.random()*5).toFixed(2)}%`}
+                </IonLabel>
+                <IonLabel> {name} </IonLabel>
+                <IonLabel > {symbol} </IonLabel>
+              </IonItem>
+            )
+          })}
+        </IonList>
+
       </IonContent>
       <NavBar />
     </IonPage>

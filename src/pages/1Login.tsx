@@ -16,8 +16,6 @@ import firebase from "firebase/app";
 import { environment } from "../environment/environment"
 import "firebase/analytics";
 import "firebase/auth";
-import "firebase/firestore";
-
 
 // Initialize Firebase
 declare const window: any;

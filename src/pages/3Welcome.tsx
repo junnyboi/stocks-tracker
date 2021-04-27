@@ -32,7 +32,9 @@ const WelcomePage: React.FC = () => {
       }
     } else {
       // No user is signed in, force logout
-      history.push('/');
+      //history.push('/');
+      setPhoneNumber("Debug Mode")
+      setPageTitle(`Debug Mode`)
     }
   })
 

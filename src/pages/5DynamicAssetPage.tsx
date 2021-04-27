@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams } from "react-router-dom";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 import {
-  IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
+  LineChart, Line, XAxis, YAxis,
+  CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
+
+import {
+  IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonItem,
   IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-  IonItem, IonIcon, IonLabel, IonButton, IonItemDivider
+
 } from '@ionic/react';
 
 import axios from 'axios';
@@ -14,15 +21,82 @@ import { environment } from '../environment/environment'
 import RoundButton from '../components/RoundButton'
 import NavBar from '../components/NavBar'
 
+// Initialize Firebase database connection
+const db = firebase.firestore();
+
+// Set observer to get current user details
+var user_mobile: string = "Debug Mode";
+firebase.auth().onAuthStateChanged(function (user) {
+  if (user) {
+    // User is signed in.
+    user_mobile = user.phoneNumber!;
+  }
+  else {
+    user_mobile = "Debug Mode"
+  }
+})
+
 const DynamicAssetPage: React.FC = () => {
   const [pageTitle, setPageTitle] = useState("Dynamic Asset Page")
+  const [isWatchlist, setIsWatchlist] = useState<boolean>(false)
   const params: { symbol: string, name: string } = useParams()
   const symbol = params.symbol;
   const name = params.name;
 
   const [quoteData, setQuoteData] = useState<any>(null);
-  const [NewsData, setNewsData] = useState<any>(null)
+  const [NewsData, setNewsData] = useState<any>(null);
   const [timeSeriesData, setTimeSeriesData] = useState<any[]>([]);
+
+
+  const watchlistRef = db.collection('watchlists').doc(user_mobile);
+
+  function AddToWatchlist() {
+    watchlistRef.get().then((doc) => {
+      if (doc.exists) {
+
+        console.log("Adding", params, "to existing watchlist for", user_mobile, doc.data())
+        watchlistRef.update({
+          stocks: firebase.firestore.FieldValue.arrayUnion(params)
+        })
+        setIsWatchlist(true);
+      }
+      else {
+        console.log("Creating new watchlist for", user_mobile)
+        watchlistRef.set({
+          created: firebase.firestore.FieldValue.serverTimestamp(),
+          stocks: params
+        });
+      }
+    })
+  };
+
+  function RemoveFromWatchlist() {
+    watchlistRef.get().then((doc) => {
+      if (doc.exists) {
+        console.log("Removing", params, "from existing watchlist for", user_mobile, doc.data())
+        console.log("New watchlist:", doc.data()!.stocks.filter((stock: any) => stock.symbol = symbol))
+        watchlistRef.update({
+          stocks: firebase.firestore.FieldValue.arrayRemove(params)
+        })
+        setIsWatchlist(false);
+      }
+    })
+  };
+
+  function CheckIsWatchlist() {
+    watchlistRef.get().then((doc) => {
+      setIsWatchlist(false);
+      if (doc.exists) {
+        console.log("doc exists:", doc.data())
+        doc.data()!.stocks.forEach((item: { name: string, symbol: string }) => {
+          if (item.name === name || item.symbol === symbol) {
+            // console.log("Stock already exists in watchlist")
+            setIsWatchlist(true);
+          }
+        });
+      }
+    })
+  }
 
   useEffect(() => {
     setPageTitle(`Stock Focus: ${symbol}`)
@@ -30,7 +104,7 @@ const DynamicAssetPage: React.FC = () => {
     const quoteApiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${environment.alphaVantageApiKey}`;
     axios.get(quoteApiUrl).then((response) => {
       const data = response.data;
-      if(data){
+      if (data) {
         setQuoteData(data);
         console.log("Quote Data:", data)
       }
@@ -40,7 +114,7 @@ const DynamicAssetPage: React.FC = () => {
     axios.get(timeSeriesApiUrl).then((response) => {
       const data = response.data["Time Series (Daily)"];
 
-      if(data){
+      if (data) {
         // Format time series data for chart
         let formattedData: any[] = []
         Object.keys(data).reverse().forEach((key) => {
@@ -49,7 +123,7 @@ const DynamicAssetPage: React.FC = () => {
             "closing": data[key]["5. adjusted close"],
           })
         })
-  
+
         console.log("Time Series Data:", formattedData)
         setTimeSeriesData(formattedData);
       }
@@ -58,12 +132,16 @@ const DynamicAssetPage: React.FC = () => {
     const newsApiUrl = `https://newsapi.org/v2/everything?q=${name}&from=2021-04-01&sortBy=popularity&apiKey=${environment.newsApiKey}`;
     axios.get(newsApiUrl).then((response) => {
       const data = response.data;
-      if(data){
+      if (data) {
         setNewsData(data);
         console.log("News Data:", data)
       }
     });
   }, [name, symbol])
+
+  useEffect(() => {
+    CheckIsWatchlist();
+  }, [])
 
   return (
     <IonPage>
@@ -126,14 +204,28 @@ const DynamicAssetPage: React.FC = () => {
 
         {/* WATCHLIST BUTTON */}
         <div className="center-align">
-          <RoundButton
-            text="Add to Watchlist"
-            handleOnClick={() => {
-              console.log(`Added ${symbol} to watchlist`)
-            }}
-            color="secondary"
-            id="watchlist-button"
-          />
+          {!isWatchlist &&
+            <RoundButton
+              text="Add to Watchlist"
+              handleOnClick={() => {
+                console.log(`Added ${symbol} to watchlist`)
+                AddToWatchlist()
+              }}
+              color="secondary"
+              id="watchlist-button"
+            />
+          }
+          {isWatchlist &&
+            <RoundButton
+              text="Remove from Watchlist"
+              handleOnClick={() => {
+                console.log(`Removed ${symbol} to watchlist`)
+                RemoveFromWatchlist()
+              }}
+              color="secondary"
+              id="watchlist-button"
+            />
+          }
         </div>
 
         {/* HISTORICAL PRICES */}
@@ -141,7 +233,7 @@ const DynamicAssetPage: React.FC = () => {
           <IonCardHeader>
             <IonCardTitle>Historical Price Data</IonCardTitle>
           </IonCardHeader>
-          <ResponsiveContainer width='100%' aspect={4.0/3.0}>
+          <ResponsiveContainer width='100%' aspect={4.0 / 3.0}>
             <LineChart
               width={350}
               height={300}
@@ -158,7 +250,7 @@ const DynamicAssetPage: React.FC = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="closing" stroke="#8884d8" activeDot={{ r: 8 }} dot={false}/>
+              <Line type="monotone" dataKey="closing" stroke="#8884d8" activeDot={{ r: 8 }} dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </IonCard>
