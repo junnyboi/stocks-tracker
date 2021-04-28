@@ -74,3 +74,7 @@ input:-webkit-autofill {
 .refresh-icon{
     margin-right: 15px;
 }
+
+ion-toolbar {
+    --border-style: none;
+}

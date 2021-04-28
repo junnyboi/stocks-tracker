@@ -184,6 +184,10 @@ http://ionicframework.com/docs/theming/ */
     --ion-item-background: transparent;
 
     --ion-card-background: transparent;
+    
+    --ion-toolbar-background: rgb(229, 157, 24);
+    --ion-toolbar-border-style: none;
+    --ion-toolbar-min-height: 1000px;
   }
 
   .ios ion-modal {
@@ -233,6 +237,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-item-background: transparent;
 
     --ion-toolbar-background: rgb(229, 157, 24);
+    --ion-toolbar-border-style: none;
 
     --ion-tab-bar-background: whitesmoke;
 

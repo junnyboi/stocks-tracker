@@ -106,8 +106,8 @@ const LoginPage: React.FC = () => {
   return (
     <IonPage>
 
-      <IonHeader className="header-container">
-        <IonToolbar>
+      <IonHeader className="header-container" no-border>
+        <IonToolbar no-border>
           <IonTitle className="header-title">{pageTitle}</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -167,7 +167,7 @@ const LoginPage: React.FC = () => {
       </IonContent>
     
       <IonFooter className="header-container">
-        <IonToolbar>
+        <IonToolbar no-border>
           <IonTitle className="header-title">Stocklist by Jun</IonTitle>
         </IonToolbar>
       </IonFooter>
