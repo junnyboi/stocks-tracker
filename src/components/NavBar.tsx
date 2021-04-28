@@ -28,7 +28,7 @@ const NavBar= () => {
         <IonIcon icon={rocket} />
         <IonLabel>Stock</IonLabel>
       </IonTabButton>
-      <IonTabButton tab="Logout" href="/">
+      <IonTabButton tab="Logout" href="/login">
         <IonIcon icon={logOut} />
         <IonLabel>Log out</IonLabel>
       </IonTabButton>

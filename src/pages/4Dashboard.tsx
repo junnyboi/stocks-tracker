@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
   IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
-  IonItem, IonLabel, IonItemDivider, IonList
+  IonItem, IonLabel, IonItemDivider, IonList, IonIcon
 } from '@ionic/react';
+import { refreshOutline } from 'ionicons/icons';
 
 import firebase from "firebase/app";
 import "firebase/firestore";
@@ -18,6 +19,10 @@ import { environment } from '../environment/environment'
 const db = firebase.firestore();
 const pageTitle = 'Dashboard'
 
+function RefreshPage() {
+  window.location.reload(false);
+}
+
 const DashboardPage: React.FC = () => {
   const [user_mobile, setUser_mobile] = useState("Debug Mode")
   const [watchlist, setWatchlist] = useState([])
@@ -26,7 +31,8 @@ const DashboardPage: React.FC = () => {
     console.log("Attempting to retrieve watchlist for", user_mobile)
     const docRef = db.collection('watchlists').doc(user_mobile)
 
-    docRef.get().then((doc) => {      if (doc.exists) {
+    docRef.get().then((doc) => {
+      if (doc.exists) {
         const stocks = doc.data()!.stocks;
         console.log("Retrieved watchlist", stocks)
         setWatchlist(stocks)
@@ -38,7 +44,7 @@ const DashboardPage: React.FC = () => {
     });
   }
 
-  const fetchPriceChange = async (symbol: string) => {    
+  const fetchPriceChange = async (symbol: string) => {
     const quoteApiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${environment.alphaVantageApiKey}`;
     axios.get(quoteApiUrl).then((response) => {
       const data = response.data;
@@ -74,8 +80,14 @@ const DashboardPage: React.FC = () => {
 
         <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Your Watchlist</IonCardTitle>
-            {/* <a href="#">{`see all -->`}</a> */}
+            <IonCardTitle>
+              <IonIcon
+                onClick={() => RefreshPage()}
+                icon={refreshOutline}
+                className="refresh-icon"
+              />
+              Your Watchlist
+            </IonCardTitle>
           </IonCardHeader>
         </IonCard>
 
@@ -92,7 +104,7 @@ const DashboardPage: React.FC = () => {
                 }
                 }>
                 <IonLabel >
-                  {`+${(Math.random()*5).toFixed(2)}%`}
+                  {`+${(Math.random() * 5).toFixed(2)}%`}
                 </IonLabel>
                 <IonLabel> {name} </IonLabel>
                 <IonLabel > {symbol} </IonLabel>

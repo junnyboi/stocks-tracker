@@ -4,8 +4,7 @@ a {
 
 .header-title {
     color:whitesmoke;
-    /* background-color: sandybrown; */
-    background-color: rgb(229, 157, 24);
+    background-color: transparent;
 }
 
 .card-title {
@@ -70,4 +69,8 @@ input:-webkit-autofill {
 .news-card{
     display:block;
     overflow: auto;
+}
+
+.refresh-icon{
+    margin-right: 15px;
 }
