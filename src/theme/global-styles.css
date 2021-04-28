@@ -76,5 +76,6 @@ input:-webkit-autofill {
 }
 
 ion-toolbar {
+    --background:  rgb(229, 157, 24);
     --border-style: none;
 }
